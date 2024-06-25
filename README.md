@@ -109,7 +109,7 @@ docker attach project_name
 
 - 如需暂离容器，非关闭，请使用快捷键 `Ctrl + p + q` 。
 
-6 - SSH 连接容器，私钥在 `/project_name/packages/sources/key` 文件夹中。
+6 - SSH 连接容器，私钥在 `/project_name/packages/sources/keys` 文件夹中。
 
 - 如使用仅 password 形式登陆，请提前查看并修改 `Dockerfile` `94` 段落。
 
