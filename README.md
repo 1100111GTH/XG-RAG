@@ -10,6 +10,7 @@ This project is made for chinese env, if your are not chinese user, will also wo
 
 - [项目简介](#项目简介-introduction-)
 - [指引](#指引-guide-)
+  - [新手提示](#新手提示--newbie-tips-)
   - [首次部署](#首次部署-deploy-)
   - [启动、关闭、迁移](#启动关闭迁移-turn-on-or-off-transfer-)
 - [数据库](#数据库-database-)
