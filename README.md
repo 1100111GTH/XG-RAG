@@ -86,7 +86,8 @@ Prompt：在自然语言处理（ NLP ）中，提示词指用于引导模型生
 ### 首次部署（ Deploy ）
 
 > [!Warning]
-GPU 至少使用两张，一张用于 LLM，一张用于 Embedding、Reranker 等小模型。目前建议模型 [Qwen1.5-32B-Chat-AWQ](https://huggingface.co/Qwen/Qwen1.5-32B-Chat-AWQ) 需 24537MiB 显存（ 一张 4090 显卡多一点，那两张 4090 多出的显存怎么办？不用担心，vLLM 会将剩余部分利用在加速推理上 ），Embedding、Reranker、ASR、TTS 差不多也要 20 GiB 上下，最终约等于 3 张 4090 显卡，项目会自动检测显卡并进行划分（ 如有更好的策略，可以前往源代码修改 ）。
+GPU 至少使用两张，一张用于 LLM，一张用于 Embedding、Reranker 等小模型。<br/>
+目前建议模型 [Qwen1.5-32B-Chat-AWQ](https://huggingface.co/Qwen/Qwen1.5-32B-Chat-AWQ) 需 24537MiB 显存（ 一张 4090 显卡多一点，那两张 4090 多出的显存怎么办？不用担心，vLLM 会将剩余部分利用在加速推理上 ），Embedding、Reranker、ASR、TTS 差不多也要 20 GiB 上下，最终约等于 3 张 4090 显卡，项目会自动检测显卡并进行划分（ 如有更好的策略，可以前往源代码修改 ）。
 
 > 建议使用 Docker
 
