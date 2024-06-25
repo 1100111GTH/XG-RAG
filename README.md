@@ -70,9 +70,6 @@ Prompt：在自然语言处理（ NLP ）中，提示词指用于引导模型生
 
 ## 指引（ Guide ）
 
-> [!Note]
-以下将以 `project_name` 指代 `xg_rag`
-
 ### 新手提示 🥬（ Newbie Tips ）
 
 相信你看到现在出现了很多困惑吧？这么多的名词缩写，什么是向量数据库？什么是提示词？🌚<br/>
@@ -129,7 +126,8 @@ source /root/.bashrc
 ```
 `nvcc -V` 或 `nvcc --version` 查看为 `release 11.8` 或 `cuda_11.8` 即为成功。
 
-> nvidia-smi 查看到的 Cuda Version 仅为驱动兼容的 Cuda 版本，而非实际安装版本（ 如果我的理解无误 ）。
+> [!Note]
+nvidia-smi 查看到的 Cuda Version 仅为驱动兼容的 Cuda 版本，而非实际安装版本（ 如果我的理解无误 ）。
 
 Container Toolkit：
 
@@ -186,17 +184,17 @@ systemctl start docker
 git clone https://github.com/1100111GTH/XG-RAG.git
 ```
 ```bash
-docker build -t project_name_img -f /path/project_name/Dockerfile /path/project_name
+docker build -t xg_rag_img -f /path/XG-RAG/Dockerfile /path/XG-RAG
 ```
 
-- `/path/project_name/Dockerfile` 是 `Dockerfile` 文件的路径。
-- `/path/project_name` 是 `app` 、`packages` ... 的上级文件夹路径。
+- `/path/XG-RAG/Dockerfile` 是 `Dockerfile` 文件路径。
+- `/path/XG-RAG` 是 `app` 、`packages` ... 的上级目录路径。
 - 建议均使用绝对路径
 
 4 - 创建并首次启动容器：
 
 ```bash
-docker run -itd --name project_name --gpus all -p 2223:2222 -p 2032:2031 -p 7008:7007 -p 6007:6006 project_name_img
+docker run -itd --name xg_rag --gpus all -p 2223:2222 -p 2032:2031 -p 7008:7007 -p 6007:6006 xg_rag_img
 ```
 
 - `2222` 、`2031`、`7007` 、`6006` 分别是 SSH、LangServe、Arize Phoenix、Gradio 在 Docker 中的端口，对应的是主机中的映射端口（ 其中 Phoenix & Gradio 提供 Webui，进入 `127.0.0.1:端口` 网址即可访问服务 ）。
@@ -204,20 +202,20 @@ docker run -itd --name project_name --gpus all -p 2223:2222 -p 2032:2031 -p 7008
 5 - 连接容器
 
 ```bash
-docker attach project_name
+docker attach xg_rag
 ```
 
 - 如需暂离容器，非关闭，请使用快捷键 `Ctrl + p + q` 。
 
-6 - SSH 连接容器，私钥在 `/project_name/packages/sources/keys` 文件夹中。
+6 - SSH 连接容器，私钥在 `/XG-RAG/packages/sources/keys` 文件夹中。
 
 - 如使用仅 password 形式登陆，请提前查看并修改 `Dockerfile` `94` 段落。
 
 7 - 下载对应模型（ 移步查看 Dockerfile 205 ~ 211 行 ）。
 
-- 为了保证项目的易于管理性，请将模型放至 `/project_name/packages/model_weight` 下。
+- 为了保证项目的易于管理性，请将模型放至 `/XG-RAG/packages/model_weight` 下。
 - 目前本项目建议使用的模型是：`LLM` [Qwen1.5-32B-Chat-AWQ](https://huggingface.co/Qwen/Qwen1.5-32B-Chat-AWQ) + `Embedding` [bge-large-zh-v1.5](https://huggingface.co/BAAI/bge-large-zh-v1.5) + `Reranker` [bge-reranker-v2-m3](https://huggingface.co/BAAI/bge-reranker-v2-m3) + `RSA` [whisper-large-v3](https://huggingface.co/openai/whisper-large-v3)。
-  - 如切换其它 LLM 模型，可能需要针对现用模型进行 Prompt Template 上的优化，项目中部分功能是针对模型回复特定语句设计的，若推理结果出乎意料，会产生代码逻辑上的错误（ 切换前请优先查看 `/project_name/packages/core/api_call.py` 中关于 `prompt template` 相关代码）。
+  - 如切换其它 LLM 模型，可能需要针对现用模型进行 Prompt Template 上的优化，项目中部分功能是针对模型回复特定语句设计的，若推理结果出乎意料，会产生代码逻辑上的错误（ 切换前请优先查看 `/XG-RAG/packages/core/api_call.py` 中关于 `prompt template` 相关代码）。
   - 这里建议的 LLM 模型依赖 [AWQ](https://github.com/mit-han-lab/llm-awq) 项目，效果似乎比 AutoGPTQ 好一些，如需使用，请查看官方 GitHub 存储库安装。
   - 部分量化版 LLM 还会使用 [AutoGPTQ](https://github.com/AutoGPTQ/AutoGPTQ) 量化项目，请查看官方 GitHub 存储库，并通过源码安装（ 目前非源码模式存在 Bug ）。
     - Tip：通过 pip3 install -e . 安装不会将源码复制到 site-packages，相反，只会创建一个 egg-link 指向链接，此模式可以更方便的在本地对包进行更改并及时同步，反之亦然。
@@ -227,7 +225,7 @@ docker attach project_name
 
 > 如使用的模型权重针对 System 提示词有做过优化，则可直接修改 System Prompt Template，输入相关信息，达到同样的效果。
 
-1. 打开 `/project_name/packages/sources/cognitive_lora.ipynb` 。
+1. 打开 `/XG-RAG/packages/sources/cognitive_lora.ipynb` 。
 2. 设置 `CUDA_VISIBLE_DEVICES` 环境变量（ 微调用到的显卡设备 ）。
    1. 建议在终端中使用 `nvidia-smi` 查看设备序列后修改。
 3. 修改 `model_type` 为对应（ [SWIFT](https://github.com/modelscope/swift/tree/main) 支援 ）的 LLM 模型名称。
@@ -242,12 +240,12 @@ docker attach project_name
 
 9 - 数据库配置：
 
-1. 为确保向量数据库正常初始化，请将提前将 Markdown 文件放至 `/project_name/packages/database` 中（ 仅可初始化单个 Markdown 文件 ）。
-   1. 若您的初始化文件命名并非 `qa`，则请修改 `/project_name/packages/core/api_call,py` 第 `55` 行中关于数据库文件的命名。
+1. 为确保向量数据库正常初始化，请将提前将 Markdown 文件放至 `/XG-RAG/packages/database` 中（ 仅可初始化单个 Markdown 文件 ）。
+   1. 若您的初始化文件命名并非 `qa`，则请修改 `/XG-RAG/packages/core/api_call,py` 第 `55` 行中关于数据库文件的命名。
 
 10 - 最终配置：
 
-1. 打开 `/project_name/packages/config/config.py` 。
+1. 打开 `/XG-RAG/packages/config/config.py` 。
 2. 如需开启 HTTPS，请在 `ssl_keyfile` & `ssl_certfile` 处提供对应文件的路径（ 建议绝对路径 ）。
 2. 修改 `llm_path` 、`embedding_path` 、`reranker_path` 为对应模型路径（ 建议绝对路径 ）。
 3. 修改 `openai_api_model_name` 与先前 `model_type` 一样的模型名称，只不过 `"_"` 改为 `"-"` 。
@@ -263,15 +261,15 @@ systemctl start docker
 ```
 
 ```bash
-docker start project_name
+docker start xg_rag
 ```
 
 ```bash
-docker attach project_name
+docker attach xg_rag
 ```
 
 ```bash
-bash /project_name/launch_all.sh  # 一键启动 swift deploy、redis-server、langchain server、gradio ...
+bash /XG-RAG/launch_all.sh  # 一键启动 swift deploy、redis-server、langchain server、gradio ...
 ```
 
 关闭：
@@ -280,7 +278,7 @@ bash /project_name/launch_all.sh  # 一键启动 swift deploy、redis-server、l
 exit  # 容器中输入
 ```
 ```bash
-docker stop project_name  # 容器外输入
+docker stop xg_rag  # 容器外输入
 ```
 
 ```bash
@@ -290,15 +288,15 @@ systemctl stop docker
 迁移：
 
 ```bash
-docker commit project_name project_name_img_1  # 将容器保存为镜像
+docker commit xg_rag xg_rag_img_1  # 将容器保存为镜像
 ```
 
 ```bash
-docker save -o /path/project_name_img.tar project_name_img_1  # 将镜像保存本地（ /path/project_name_img.tar 为保存路径及文件名 ）
+docker save -o /path/xg_rag_img.tar xg_rag_img_1  # 将镜像保存本地（ /path/xg_rag_img.tar 为保存路径及文件名 ）
 ```
 
 ```bash
-docker docker load -i /path/project_name_img.tar  # 新主机 Docker 载入（ 不要忘了在新主机上先启动 Docker 服务 ）
+docker docker load -i /path/xg_rag_img.tar  # 新主机 Docker 载入（ 不要忘了在新主机上先启动 Docker 服务 ）
 ```
 
 ### 数据库（ Database ）
@@ -338,7 +336,7 @@ docker docker load -i /path/project_name_img.tar  # 新主机 Docker 载入（ �
 
 ### 应用程序编程接口（ API ）
 
-前往查看 WebUI “应用程序编程接口” Tab 或 `/project_name/packages/sources/text_only.py` 的 `api_guid` 变量。
+前往查看 WebUI “应用程序编程接口” Tab 或 `/XG-RAG/packages/sources/text_only.py` 的 `api_guid` 变量。
 
 ## 🤘🏻😉🤘🏻
 

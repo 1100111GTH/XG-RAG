@@ -6,7 +6,7 @@ import torch
 ai_name = "小光"
 weight_size = "320 亿"
 project_name = "XG RAG"
-project_name_1 = "xg_rag"  # 此处建议遵守 Python 变量命名规范（ 全小写、“_” 替换空格和 “-” ）
+project_name_1 = "XG-RAG"  # 用于创建 Docker 内容器文件夹
 # 调用 ChatGPT
 ## 不使用时忽略就好
 openai_api_key=""
