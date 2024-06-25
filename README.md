@@ -86,6 +86,9 @@ systemctl start docker
 3 - 创建镜像：
 
 ```bash
+git clone https://github.com/1100111GTH/XG-RAG.git
+```
+```bash
 docker build -t project_name_img -f /path/project_name/Dockerfile /path/project_name
 ```
 
