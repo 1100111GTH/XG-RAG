@@ -34,9 +34,9 @@ bad_answer = "对不起，我只能回答您关于本平台的相关问题。"
 # 模型相关
 ######################################################
 llm_path = f"/{project_name_1}/packages/model/Qwen1.5-32B-Chat-AWQ"
-asr_path = f"/{project_name_1}/packages/model/whisper-large-v3"
 embedding_path = f"/{project_name_1}/packages/model/bge-large-zh-v1.5"
 reranker_path = f"/{project_name_1}/packages/model/bge-reranker-v2-m3"
+asr_path = f"/{project_name_1}/packages/model/whisper-large-v3"
 sound_color_path = f"/{project_name_1}/packages/model/seed_1345_restored_emb.pt"
 openai_api_model_name = "qwen1half-32b-chat-awq"
 

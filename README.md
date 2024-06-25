@@ -141,7 +141,7 @@ sudo apt update
 sudo apt install nvidia-container-toolkit
 ```
 
-如果在安装 Container Toolkit 前 Docker 已经启动，请重启 Docker（ systemctl restart docker ）
+如果在安装 Container Toolkit 前 Docker 已经启动，请重启 Docker（ `systemctl restart docker` ）
 
 2 - 主机安装 Docker Engine 后启动服务。
 
@@ -212,11 +212,11 @@ docker attach xg_rag
 > [!Warning]
 使用公共的私钥是不安全的行为，建议自行生成一套公私钥使用（ `ssh-keygen` ）
 
-SSH 链接方式有很多，通过 [VSCode 编辑器](https://code.visualstudio.com/) 或 Terminal，如不清楚建议百度一下，只需要将地址和端口带入就行。
+可通过 [VSCode 编辑器](https://code.visualstudio.com/) 或主机终端连接，如不清楚建议百度一下。
 
 > 如需使用仅 password 形式登陆，请提前查看并修改 `Dockerfile` `94` 段落。
 
-7 - 下载对应模型（ 移步查看 Dockerfile 205 ~ 211 行 ）。
+7 - 下载对应模型。
 
 - 为了保证项目的易于管理性，请将模型放至 `/XG-RAG/packages/model_weight` 下。
 - 目前本项目建议使用的模型是：`LLM` [Qwen1.5-32B-Chat-AWQ](https://huggingface.co/Qwen/Qwen1.5-32B-Chat-AWQ) + `Embedding` [bge-large-zh-v1.5](https://huggingface.co/BAAI/bge-large-zh-v1.5) + `Reranker` [bge-reranker-v2-m3](https://huggingface.co/BAAI/bge-reranker-v2-m3) + `RSA` [whisper-large-v3](https://huggingface.co/openai/whisper-large-v3)。
@@ -225,7 +225,7 @@ SSH 链接方式有很多，通过 [VSCode 编辑器](https://code.visualstudio.
   - 部分量化版 LLM 还会使用 [AutoGPTQ](https://github.com/AutoGPTQ/AutoGPTQ) 量化项目，请查看官方 GitHub 存储库，并通过源码安装（ 非源码模式可能存在 Bug ）。
     - Tip：通过 pip3 install -e . 安装不会将源码复制到 site-packages，相反，只会创建一个 egg-link 指向链接，此模式可以更方便的在本地对包进行更改并及时同步，反之亦然。
 
-下方是下载的样例代码（ 容器内执行 ）：
+下方是下载代码（ 容器内执行 ）：
 
 ```bash
 export HF_HUB_ENABLE_HF_TRANSFER=1  # 设置环境变量开启多线程下载
@@ -324,6 +324,10 @@ docker docker load -i /path/xg_rag_img.tar  # 新主机 Docker 载入（ 不要�
 
 ### 数据库（ Database ）
 
+#### 关于文件格式
+
+为了使数据库取回这一功能取得最好效果，现在仅开放了 Markdown 文件上传，但可以结合 [Unstructured](https://github.com/Unstructured-IO/unstructured) 项目针对所有的人类可读文件操作，如 text、json、pdf、jpg、png、excel ... ，因此类不如 Markdown 做到了结构上内容与内容间的明确区分（ 向量数据库内的信息需要进行划分 ），所以商用优先建议考虑 Markdown，而非其它格式（ 后续可能会考虑适配其它格式 ）。
+
 #### （ Markdown ）维护和新增建议：
 
 > 为了展示效果，可以在部分需要换行的节点使用 `<br/>` 进行换行。
@@ -340,7 +344,7 @@ docker docker load -i /path/xg_rag_img.tar  # 新主机 Docker 载入（ 不要�
      - NBA 2k23 不仅在移动平台上可以游玩，主机及 PC 也可。AI 在回复中可能会额外给出一些不属于意向平台的回复。
 4. `减少使用重复词汇`；更多的重复词汇可能会导致取回到错误信息的概率增加，即使在代码架构中已极力降低了此机率。建议在彼此不相关的 QA 内容上减少词汇的重叠。
 5. 有的小伙伴可能会说 `精准描述` 与 `减少对重复词汇的使用` 两者相矛盾，这里建议 `精准描述` 需要在 `减少使用重复词汇` 的基础上完成，且无需过度纠结 `精准描述` 的执行程度，建议在新的数据库内容上线前多做测试，当 AI 出现了非预想的回复时，再去修改文本以纠正 AI 回复，也就是去完善 `精准描述`（ AI 的回复可以被数据库内容纠正 ）。
-6. 由于数据库内容除了 AI 需要读取，小伙伴们可能也需要阅读。建议全文采用统一的编写习惯，混乱的编写内容，错误的中英文符号（ 半全角符号 ）混用都会一定程度增加理解的困难度。
+6. 由于数据库内容除了 AI 需要读取，小伙伴们可能也需要阅读。建议全文采用统一的编写习惯，混乱的编写内容，错误的中英文符号（ 半全角符号 ）混用都会一定程度增加阅读难度。
    - 标点符号混用等小问题，AI 在理解时会自动纠正，但还是规范为好。
    - 具体编写习惯可以自行统一决定，不对 AI 增加理解负担即可。
 
@@ -352,10 +356,6 @@ docker docker load -i /path/xg_rag_img.tar  # 新主机 Docker 载入（ 不要�
 
 > 注意！测试文件会在服务器关闭时丢失，请注意保存。
 > 无论正式数据库或测试数据库，内容一旦删除，不可复原，请谨慎操作。
-
-#### 关于文件格式
-
-为了使数据库取回这一功能取得最好效果，现在仅开放了 Markdown 文件上传，但可以结合 [Unstructured](https://github.com/Unstructured-IO/unstructured) 项目针对所有的人类可读文件操作，如 text、json、pdf、jpg、png、excel ... ，因此类不如 Markdown 做到了结构上内容与内容间的明确区分（ 向量数据库内的信息需要进行划分 ），所以商用优先建议考虑 Markdown，而非其它格式（ 后续可能会考虑适配其它格式 ）。
 
 ### 应用程序编程接口（ API ）
 
