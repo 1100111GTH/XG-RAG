@@ -266,7 +266,7 @@ huggingface-cli download --resume-download --local-dir-use-symlinks False openai
 9 - 数据库配置：
 
 1. 为确保向量数据库正常初始化，请将提前将 Markdown 文件放至 `/XG-RAG/packages/database` 中（ 仅可初始化单个 Markdown 文件 ）。
-   1. 若您的初始化文件命名并非 `qa`，则请修改 `/XG-RAG/packages/core/api_call,py` 第 `55` 行中关于数据库文件的命名。
+    - 若您的初始化文件命名并非 `qa`，则请修改 `/XG-RAG/packages/core/api_call,py` 第 `55` 行中关于数据库文件的命名。
 
 10 - 最终配置：
 
