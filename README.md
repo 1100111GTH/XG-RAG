@@ -171,7 +171,7 @@ docker attach project_name
 ```
 
 ```bash
-bash /project_name/launch_all.sh  # 一键启动 swift deploy、redis-server、langchain server、gradio
+bash /project_name/launch_all.sh  # 一键启动 swift deploy、redis-server、langchain server、gradio ...
 ```
 
 关闭：
