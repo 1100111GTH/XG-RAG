@@ -254,6 +254,6 @@ ENTRYPOINT systemctl start ssh && bash
 # 常规连接：ssh root@ip -p 安全外壳协议端口
 # 公私钥连接：ssh -i /path/id_rsa root@ip -p 安全外壳协议端口
 # X11 转发：ssh -i /path/id_rsa -X root@ip -p 安全外壳协议端口
-# 端口转发（ 不可执行命令 ）：ssh -i /path/id_rsa -L 端口:localhost:端口 root@ip -p 安全外壳协议端口 -N
+# 端口转发：ssh -i /path/id_rsa -L 端口:localhost:端口 root@ip -p 安全外壳协议端口 -N
 
 
