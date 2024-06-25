@@ -1,0 +1,65 @@
+# 其它依赖请查看 Dockerfile（ 更全面 ）
+
+[tool.poetry]
+name = "xg_rag"
+version = "2.4.1"  # Detail in packages/sources/version_info.md
+description = ""
+authors = ["internethat@tutamail.com"]
+readme = "README.md"
+packages = [
+    { include = "app" },
+]
+
+[tool.poetry.source]
+name = "pytorch-repo"
+url = "https://download.pytorch.org/whl/cu118"
+
+[tool.poetry.dependencies]
+python = "3.9.18"
+torch = { version = "2.1.2+cu118", source = "pytorch-repo" }
+torchaudio = { version = "2.1.2+cu118", source = "pytorch-repo" }
+torchvision = { version = "0.16.2+cu118", source = "pytorch-repo" }
+xformers = { version = "*", source = "pytorch-repo" }
+einops = "*"
+scipy = "*"
+poetry = "*"
+apscheduler = "*"
+redis = "*"
+sentence-transformers = "2.2.2"
+accelerate = "*"
+transformers = ">=4.37.0"
+hf-transfer = "*"
+transformers_stream_generator = "0.0.4"
+tiktoken = "*"
+langchain = "*"
+langsmith = "*"
+langgraph = "*"
+langchain-cli = "*"
+langchain_openai = "*"
+langchain_cohere = "*"
+langserve = { version = "*", extras = ["all"] }
+gradio = ">=4.26.0"
+arize-phoenix = { version = "*", extras = ["evals"] }
+ipywidgets = "*"
+flash-attn = "*  --no-build-isolation"
+ms-swift = "2.0.4"
+tomlkit = "0.12.4"
+bitsandbytes = "*"
+numpy = "*"
+gekko = "*"
+pandas = "*"
+faiss-cpu = "*"
+autoawq = "*"
+cryptography = "*"
+vllm = { url = "https://github.com/vllm-project/vllm/releases/download/v0.4.2/vllm-0.4.2+cu118-cp39-cp39-manylinux1_x86_64.whl" }
+
+[tool.poetry.group.test.dependencies]
+pytest = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+# 请在 Shell 中运行 poetry cache clear --all 以清除本地的 whl 文件
+
+

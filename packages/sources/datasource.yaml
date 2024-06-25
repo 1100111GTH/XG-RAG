@@ -1,0 +1,10 @@
+apiVersion: 1
+datasources:
+  - name: Prometheus  # 自定义数据源名称
+    type: prometheus  # 数据源类型
+    access: proxy
+    orgId: 1
+    uid: vllm  # 需要在 Grafana 中唯一，并会在 Dashboard 配置文件中使用
+    url: http://127.0.0.1:9090  # Prometheus 地址
+
+
