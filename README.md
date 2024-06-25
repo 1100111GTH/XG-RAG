@@ -120,7 +120,7 @@ docker attach project_name
 
 - 为了保证项目的易于管理性，请将模型放至 `/project_name/packages/model_weight` 下。
 - 目前本项目建议使用的模型是：`LLM` [Qwen1.5-32B-Chat-AWQ](https://huggingface.co/Qwen/Qwen1.5-32B-Chat-AWQ) + `Embedding` [bge-large-zh-v1.5](https://huggingface.co/BAAI/bge-large-zh-v1.5) + `Reranker` [bge-reranker-v2-m3](https://huggingface.co/BAAI/bge-reranker-v2-m3) + `RSA` [whisper-large-v3](https://huggingface.co/openai/whisper-large-v3)。
-  - 如切换其它 LLM 模型，可能需要针对现用模型进行 Prompt Template 上的优化，项目中部分功能是针对模型回复特定语句设计的，若推理结果出乎意料，会产生代码逻辑上的错误（ 切换前请优先查看 `/project_name/packages/core/api_invoke.py` 中关于 `prompt template` 相关代码）。
+  - 如切换其它 LLM 模型，可能需要针对现用模型进行 Prompt Template 上的优化，项目中部分功能是针对模型回复特定语句设计的，若推理结果出乎意料，会产生代码逻辑上的错误（ 切换前请优先查看 `/project_name/packages/core/api_call.py` 中关于 `prompt template` 相关代码）。
   - 这里建议的 LLM 模型依赖 [AWQ](https://github.com/mit-han-lab/llm-awq) 项目，效果似乎比 AutoGPTQ 好一些，如需使用，请查看官方 GitHub 存储库安装。
   - 部分量化版 LLM 还会使用 [AutoGPTQ](https://github.com/AutoGPTQ/AutoGPTQ) 量化项目，请查看官方 GitHub 存储库，并通过源码安装（ 目前非源码模式存在 Bug ）。
     - Tip：通过 pip3 install -e . 安装不会将源码复制到 site-packages，相反，只会创建一个 egg-link 指向链接，此模式可以更方便的在本地对包进行更改并及时同步，反之亦然。
