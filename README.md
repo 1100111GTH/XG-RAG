@@ -220,10 +220,10 @@ docker attach xg_rag
 
 - 为了保证项目的易于管理性，请将模型放至 `/XG-RAG/packages/model_weight` 下。
 - 目前本项目建议使用的模型是：`LLM` [Qwen1.5-32B-Chat-AWQ](https://huggingface.co/Qwen/Qwen1.5-32B-Chat-AWQ) + `Embedding` [bge-large-zh-v1.5](https://huggingface.co/BAAI/bge-large-zh-v1.5) + `Reranker` [bge-reranker-v2-m3](https://huggingface.co/BAAI/bge-reranker-v2-m3) + `RSA` [whisper-large-v3](https://huggingface.co/openai/whisper-large-v3)。
-  - 如切换其它 LLM 模型，可能需要针对现用模型进行 Prompt Template 上的优化，项目中部分功能是针对模型回复特定语句设计的，若推理结果出乎意料，会产生代码逻辑上的错误（ 切换前请优先查看 `/XG-RAG/packages/core/api_call.py` 中关于 `prompt template` 相关代码）。
-  - 这里建议的 LLM 模型依赖 [AWQ](https://github.com/mit-han-lab/llm-awq) 项目，效果似乎比 AutoGPTQ 好一些，如需使用，请查看官方 GitHub 存储库安装。
-  - 部分量化版 LLM 还会使用 [AutoGPTQ](https://github.com/AutoGPTQ/AutoGPTQ) 量化项目，请查看官方 GitHub 存储库，并通过源码安装（ 非源码模式可能存在 Bug ）。
-    - 通过 pip3 install -e . 安装不会将源码复制到 site-packages，相反，只会创建一个 egg-link 指向链接，此模式可以更方便的在本地对包进行更改并及时同步，反之亦然。
+    - 如切换其它 LLM 模型，可能需要针对现用模型进行 Prompt Template 上的优化，项目中部分功能是针对模型回复特定语句设计的，若推理结果出乎意料，会产生代码逻辑上的错误（ 切换前请优先查看 `/XG-RAG/packages/core/api_call.py` 中关于 `prompt template` 相关代码）。
+    - 这里建议的 LLM 模型依赖 [AWQ](https://github.com/mit-han-lab/llm-awq) 项目，效果似乎比 AutoGPTQ 好一些，如需使用，请查看官方 GitHub 存储库安装。
+    - 部分量化版 LLM 还会使用 [AutoGPTQ](https://github.com/AutoGPTQ/AutoGPTQ) 量化项目，请查看官方 GitHub 存储库，并通过源码安装（ 非源码模式可能存在 Bug ）。
+        - 通过 pip3 install -e . 安装不会将源码复制到 site-packages，相反，只会创建一个 egg-link 指向链接，此模式可以更方便的在本地对包进行更改并及时同步，反之亦然。
 
 下方是下载代码（ 容器内执行 ）：
 
@@ -252,14 +252,14 @@ huggingface-cli download --resume-download --local-dir-use-symlinks False openai
 
 1. 打开 `/XG-RAG/packages/sources/cognitive_lora.ipynb` 。
 2. 设置 `CUDA_VISIBLE_DEVICES` 环境变量（ 微调用到的显卡设备 ）。
-   1. 建议在终端中使用 `nvidia-smi` 查看设备序列后修改。
+    - 建议在终端中使用 `nvidia-smi` 查看设备序列后修改。
 3. 修改 `model_type` 为对应（ [SWIFT](https://github.com/modelscope/swift/tree/main) 支援 ）的 LLM 模型名称。
-   1. 如果你使用的是 [VSCode 编辑器](https://code.visualstudio.com/)，可以 `Ctrl` or `Command + 点击` `ModelType` 去查看支援且对应的模型命名
-   2. 查阅官方 github 也是可以的。
+    - 如果你使用的是 [VSCode 编辑器](https://code.visualstudio.com/)，可以 `Ctrl` or `Command + 点击` `ModelType` 去查看支援且对应的模型命名
+        - 查阅官方 github 也是可以的。
 4. 修改关键字参数 `model_name` 、`model_author` 至希望的值。
 5. 注意：
-   1. 微调模型存在梯度，往往会比正常启动模型的显存占用更大一些。
-   2. 不同的数据集对微调的影响较大，可能产生负面效果（ 遗忘 ）。即使数据集一致，每次微调的效果不一定完全一样，所以建议在得到一个较为满意的模型后保存复用。
+    - 微调模型存在梯度，往往会比正常启动模型的显存占用更大一些。
+    - 不同的数据集对微调的影响较大，可能产生负面效果（ 遗忘 ）。即使数据集一致，每次微调的效果不一定完全一样，所以建议在得到一个较为满意的模型后保存复用。
 6. 合并后的模型路径位于执行命令目录的 `output` 文件夹中。
 7. 使用微调后的模型用于部署时，请不要忘记将新模型路径修改至 `config.py` 中。
 
