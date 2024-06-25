@@ -64,7 +64,9 @@ Prompt：在自然语言处理（ NLP ）中，提示词指用于引导模型生
 - 数据库对话：`含提示词模板` ；此模式下，当最终提示词内的数据库参考为空时（ 取回数据库时使用阈值 ），回复特定语句，可通过修改源代码的形式更改回复语句。
 - 数据库对话（ 无限制 ）：`含提示词模板` ；数据库对话的无限制版本，当最终提示词内的数据库参考为空时（ 取回数据库时无阈值 ），对话模式临时变为 “基础对话”。
 
-> 项目中大部份配置可通过 WebUI 修改。当前为了节约资源，杜绝测试和部署环境互相干扰，有关 API 的改动可能需要重启服务后生效。
+> 此处提示词指代非系统提示词
+
+项目中大部份配置可通过 WebUI 修改。当前为了节约资源，杜绝测试和部署环境互相干扰，有关 API 的改动可能需要重启服务后生效。
 
 ## 指引（ Guide ）
 
@@ -93,10 +95,87 @@ GPU 至少使用两张，一张用于 LLM，一张用于 Embedding、Reranker �
 
 > 建议使用 Docker
 
-1 - 主机安装 NVIDIA Toolkit（ 移步查看 Dockerfile ）。
+1 - 主机安装 CUDA Toolkit & Container Toolkit。
 
-2 - 主机安装 Docker Engine（ 移步查看 Dockerfile ）后启动服务。
+CUDA Toolkit:
+下方指引仅适用于 Ubuntu 22.04，其它版本或系统请 [点此查看](https://developer.nvidia.com/cuda-11-8-0-download-archive)
 
+```bash
+sudo apt install wget curl
+```
+```bash
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.0-1_all.deb
+```
+```bash
+sudo dpkg -i cuda-keyring_1.0-1_all.deb
+```
+```bash
+sudo apt update
+```
+```bash
+sudo apt install cuda=11.8.0-1
+```
+```bash
+reboot  # 重启主机
+```
+```bash
+echo 'PATH="/usr/local/cuda/bin:$PATH"' | sudo tee -a /root/.bashrc
+```
+```bash
+echo 'LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"' | sudo tee -a /root/.bashrc
+```
+```bash
+source /root/.bashrc
+```
+`nvcc -V` 或 `nvcc --version` 查看为 `release 11.8` 或 `cuda_11.8` 即为成功。
+
+> nvidia-smi 查看到的 Cuda Version 仅为驱动兼容的 Cuda 版本，而非实际安装版本（ 如果我的理解无误 ）。
+
+Container Toolkit：
+
+```bash
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+```
+```bash
+sudo apt update
+```
+```bash
+sudo apt install nvidia-container-toolkit
+```
+
+> 如果在安装 Container Toolkit 前 Docker 已经启动，请重启 Docker（ systemctl restart docker ）
+
+2 - 主机安装 Docker Engine 后启动服务。
+
+下方指引仅适用于 Ubuntu 22.04，其它版本或系统请 [点此查看](https://docs.docker.com/engine/install/)
+
+```bash
+sudo apt update
+```
+```bash
+sudo apt install ca-certificates
+```
+```bash
+sudo install -m 0755 -d /etc/apt/keyrings
+```
+```bash
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+```
+```bash
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+```
+```bash
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+```
+```bash
+sudo apt update
+```
+```bash
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
 ```bash
 systemctl start docker
 ```
