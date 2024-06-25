@@ -124,7 +124,7 @@ echo 'LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"' | sudo tee -a /r
 ```bash
 source /root/.bashrc
 ```
-`nvcc -V` 或 `nvcc --version` 查看为 `release 11.8` 或 `cuda_11.8` 即为成功。
+`nvcc -V` 或 `nvcc --version` 查看为 “release 11.8” 或 “cuda_11.8” 即为成功。
 
 > [!Note]
 nvidia-smi 查看到的 Cuda Version 仅为驱动兼容的 Cuda 版本，而非实际安装版本（ 如果我的理解无误 ）。
@@ -141,7 +141,7 @@ sudo apt update
 sudo apt install nvidia-container-toolkit
 ```
 
-> 如果在安装 Container Toolkit 前 Docker 已经启动，请重启 Docker（ systemctl restart docker ）
+如果在安装 Container Toolkit 前 Docker 已经启动，请重启 Docker（ systemctl restart docker ）
 
 2 - 主机安装 Docker Engine 后启动服务。
 
@@ -209,7 +209,12 @@ docker attach xg_rag
 
 6 - SSH 连接容器，私钥在 `/XG-RAG/packages/sources/keys` 文件夹中。
 
-- 如使用仅 password 形式登陆，请提前查看并修改 `Dockerfile` `94` 段落。
+> [!Warning]
+使用公共的私钥是不安全的行为，建议自行生成一套公私钥使用（ `ssh-keygen` ）
+
+SSH 链接方式有很多，通过 [VSCode 编辑器](https://code.visualstudio.com/) 或 Terminal，如不清楚建议百度一下，只需要将地址和端口带入就行。
+
+> 如需使用仅 password 形式登陆，请提前查看并修改 `Dockerfile` `94` 段落。
 
 7 - 下载对应模型（ 移步查看 Dockerfile 205 ~ 211 行 ）。
 
@@ -217,9 +222,29 @@ docker attach xg_rag
 - 目前本项目建议使用的模型是：`LLM` [Qwen1.5-32B-Chat-AWQ](https://huggingface.co/Qwen/Qwen1.5-32B-Chat-AWQ) + `Embedding` [bge-large-zh-v1.5](https://huggingface.co/BAAI/bge-large-zh-v1.5) + `Reranker` [bge-reranker-v2-m3](https://huggingface.co/BAAI/bge-reranker-v2-m3) + `RSA` [whisper-large-v3](https://huggingface.co/openai/whisper-large-v3)。
   - 如切换其它 LLM 模型，可能需要针对现用模型进行 Prompt Template 上的优化，项目中部分功能是针对模型回复特定语句设计的，若推理结果出乎意料，会产生代码逻辑上的错误（ 切换前请优先查看 `/XG-RAG/packages/core/api_call.py` 中关于 `prompt template` 相关代码）。
   - 这里建议的 LLM 模型依赖 [AWQ](https://github.com/mit-han-lab/llm-awq) 项目，效果似乎比 AutoGPTQ 好一些，如需使用，请查看官方 GitHub 存储库安装。
-  - 部分量化版 LLM 还会使用 [AutoGPTQ](https://github.com/AutoGPTQ/AutoGPTQ) 量化项目，请查看官方 GitHub 存储库，并通过源码安装（ 目前非源码模式存在 Bug ）。
+  - 部分量化版 LLM 还会使用 [AutoGPTQ](https://github.com/AutoGPTQ/AutoGPTQ) 量化项目，请查看官方 GitHub 存储库，并通过源码安装（ 非源码模式可能存在 Bug ）。
     - Tip：通过 pip3 install -e . 安装不会将源码复制到 site-packages，相反，只会创建一个 egg-link 指向链接，此模式可以更方便的在本地对包进行更改并及时同步，反之亦然。
 
+下方是下载的样例代码（ 容器内执行 ）：
+
+```bash
+export HF_HUB_ENABLE_HF_TRANSFER=1  # 设置环境变量开启多线程下载
+```
+```bash
+export HF_ENDPOINT=https://hf-mirror.com  # 替换为国内镜像站
+```
+```bash
+huggingface-cli download --resume-download --local-dir-use-symlinks False Qwen/Qwen1.5-32B-Chat-AWQ --local-dir /XG-RAG/packages/model_weight/Qwen1.5-32B-Chat-AWQ
+```
+```bash
+huggingface-cli download --resume-download --local-dir-use-symlinks False BAAI/bge-large-zh-v1.5 --local-dir /XG-RAG/packages/model_weight/bge-large-zh-v1.5
+```
+```bash
+huggingface-cli download --resume-download --local-dir-use-symlinks False BAAI/bge-reranker-v2-m3 --local-dir /XG-RAG/packages/model_weight/bge-reranker-v2-m3
+```
+```bash
+huggingface-cli download --resume-download --local-dir-use-symlinks False openai/whisper-large-v3 --local-dir /XG-RAG/packages/model_weight/whisper-large-v3
+```
 
 8 - 微调大语言模型自我认知：
 
@@ -247,10 +272,8 @@ docker attach xg_rag
 
 1. 打开 `/XG-RAG/packages/config/config.py` 。
 2. 如需开启 HTTPS，请在 `ssl_keyfile` & `ssl_certfile` 处提供对应文件的路径（ 建议绝对路径 ）。
-2. 修改 `llm_path` 、`embedding_path` 、`reranker_path` 为对应模型路径（ 建议绝对路径 ）。
-3. 修改 `openai_api_model_name` 与先前 `model_type` 一样的模型名称，只不过 `"_"` 改为 `"-"` 。
-4. `small_model_loadon` 是 Embedding & Reranker 模型的加载设备。为了防止显存溢出，本项目采取的策略是将它们单独加载到独立于 LLM 外的显卡上，通常是最后一张显卡。
-   1. 可能会产生一些显存空置。
+3. 修改 `openai_api_model_name` 与先前 `model_type` 一样的模型名称，只不过 `"_"` 改为 `"-"` （ 如果使用的是推荐模型则无需修改 ）。
+4. `small_model_loadon` 是 Embedding & Reranker 等小模型的加载设备。
 
 ### 启动、关闭、迁移（ Turn On or Off, Transfer ）
 

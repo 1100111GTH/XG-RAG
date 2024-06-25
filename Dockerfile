@@ -91,7 +91,7 @@ WORKDIR /project_name
 COPY . /project_name/
 
 # 完成 SSH, Grafana, Prometheus 配置
-## SSH 私钥在 packages/sources/keys 中（ 建议自行生成一套公私钥使用，防止 Hack ）
+## SSH 私钥在 packages/sources/keys 中（ 建议自行生成一套公私钥使用 ）
 RUN mkdir -p /var/run/sshd && \
     # 如使用密码登陆：echo 'root:xconnectg' | chpasswd（ 外加 PermitRootLogin yes ）
     sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin prohibit-password/' /etc/ssh/sshd_config && \
