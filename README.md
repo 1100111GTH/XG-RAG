@@ -16,9 +16,9 @@ This project is made for chinese env, if your are not chinese user, will also wo
   - [首次部署](#首次部署-deploy-)
   - [启动、关闭、迁移](#启动关闭迁移-turn-on-or-off-transfer-)
 - [数据库](#数据库-database-)
-  - [维护和新增建议](#-markdown-维护和新增建议)
-  - [如何测试新的数据库内容](#如何测试新的数据库内容)
   - [关于文件格式](#关于文件格式)
+  - [维护和新增建议](#维护和新增建议-markdown-)
+  - [如何测试新的数据库内容](#如何测试新的数据库内容)
 - [应用程序编程接口](#应用程序编程接口-api-)
 - [基石项目](#基石项目-code-with-)
 
@@ -223,7 +223,7 @@ docker attach xg_rag
   - 如切换其它 LLM 模型，可能需要针对现用模型进行 Prompt Template 上的优化，项目中部分功能是针对模型回复特定语句设计的，若推理结果出乎意料，会产生代码逻辑上的错误（ 切换前请优先查看 `/XG-RAG/packages/core/api_call.py` 中关于 `prompt template` 相关代码）。
   - 这里建议的 LLM 模型依赖 [AWQ](https://github.com/mit-han-lab/llm-awq) 项目，效果似乎比 AutoGPTQ 好一些，如需使用，请查看官方 GitHub 存储库安装。
   - 部分量化版 LLM 还会使用 [AutoGPTQ](https://github.com/AutoGPTQ/AutoGPTQ) 量化项目，请查看官方 GitHub 存储库，并通过源码安装（ 非源码模式可能存在 Bug ）。
-    - Tip：通过 pip3 install -e . 安装不会将源码复制到 site-packages，相反，只会创建一个 egg-link 指向链接，此模式可以更方便的在本地对包进行更改并及时同步，反之亦然。
+    - 通过 pip3 install -e . 安装不会将源码复制到 site-packages，相反，只会创建一个 egg-link 指向链接，此模式可以更方便的在本地对包进行更改并及时同步，反之亦然。
 
 下方是下载代码（ 容器内执行 ）：
 
@@ -248,7 +248,7 @@ huggingface-cli download --resume-download --local-dir-use-symlinks False openai
 
 8 - 微调大语言模型自我认知：
 
-> 如使用的模型权重针对 System 提示词有做过优化，则可直接修改 System Prompt Template，输入相关信息，达到同样的效果。
+> 如使用的模型权重针对 System 提示词有做过优化，则可直接修改 System Prompt Template（ WebUI “应用程序编程接口” Tab 内可修改 ），输入相关信息，达到同样的效果。
 
 1. 打开 `/XG-RAG/packages/sources/cognitive_lora.ipynb` 。
 2. 设置 `CUDA_VISIBLE_DEVICES` 环境变量（ 微调用到的显卡设备 ）。
@@ -328,11 +328,12 @@ docker docker load -i /path/xg_rag_img.tar  # 新主机 Docker 载入（ 不要�
 
 为了使数据库取回这一功能取得最好效果，现在仅开放了 Markdown 文件上传，但可以结合 [Unstructured](https://github.com/Unstructured-IO/unstructured) 项目针对所有的人类可读文件操作，如 text、json、pdf、jpg、png、excel ... ，因此类不如 Markdown 做到了结构上内容与内容间的明确区分（ 向量数据库内的信息需要进行划分 ），所以商用优先建议考虑 Markdown，而非其它格式（ 后续可能会考虑适配其它格式 ）。
 
-#### （ Markdown ）维护和新增建议：
+#### 维护和新增建议（ Markdown ）：
 
 > 为了展示效果，可以在部分需要换行的节点使用 `<br/>` 进行换行。
 
-> 下方内容仅作于约定俗成的维护规范，不等于不遵守 AI 就无法获取信息，反之遵守后 AI 会更轻易的获取重点信息。
+> [!Note]
+下方内容仅作于约定俗成的维护规范，不等于不遵守 AI 就无法获取信息，反之遵守后 AI 会更轻易的获取重点信息。
 
 1. `降低理解难度`；鉴于不同的 AI 模型的理解力有不同的表现，且关注点可能不一致，请各位在编写数据库文本时越通俗易懂越好。
 2. `仅用一级标题`；仅使用 Markdown 中的一级标题（ `# Title` ）作为 “问题”，正文作为 “解答”。
