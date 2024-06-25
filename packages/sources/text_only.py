@@ -27,15 +27,15 @@ audio_text = RemoteRunnable(url="http://localhost:2031/audio_text/", headers={"P
 infer = RemoteRunnable(url="http://localhost:2031/infer/", headers={"P": "password"})  # 主要推理接口
 simple_infer = RemoteRunnable(url="http://localhost:2031/simple_infer/", headers={"P": password})  # 回复建议接口
 plus_links = RemoteRunnable(url="http://localhost:2031/plus_links/", headers={"P": "password"})  # 获取资料链接
-talk_analyze = RemoteRunnable(url="http://localhost:2031/talk_analyze/", headers={"P": password})  # 特征分析接口
+session_analyze = RemoteRunnable(url="http://localhost:2031/session_analyze/", headers={"P": password})  # 特征分析接口
 clean_history = RemoteRunnable(url="http://localhost:2031/clean_history/", headers={"P": "password"})  # 清除有关缓存（ 数据 ）
 
 
 # 第三步（ API 示范｜Python ）
 ######################################################
-# 在客户转至人工客服对话前建议调用 talk_analyze 接口，接口将返回一段文字可能有助于对接人员理解先前对话并获取相关建议
+# 在客户转至人工客服对话前建议调用 session_analyze 接口，接口将返回一段文字可能有助于对接人员理解先前对话并获取相关建议
 ## 如果 API 配置中已开启历史分析，则无需提供 input 键值对，系统将自动从 Redis 中获取信息，否则建议以 “客户：说的话 小光：说的话” 这类格式提供客户端对话信息（ 提倡仅提供最新三轮对话数据，降低压力 ）
-talk_analyze.invoke(
+session_analyze.invoke(
     { 
         "input": f"客户：xxxx 小光：xxxx 客户：xxx 小光：xxx", 
         "id": id_input, 
@@ -111,7 +111,7 @@ clean_history.invoke({"id": "usr_id", "challenge": challenge["Challenge"]})  # �
 
 # 特征分析
 ## 如果 API 配置中已开启历史分析，则无需提供 input 键值对，系统将自动从 Redis 中获取信息
-curl --location --request POST 'http://localhost:2031/talk_analyze/invoke' \
+curl --location --request POST 'http://localhost:2031/session_analyze/invoke' \
     --header 'Content-Type: application/json' \
     --header 'P: password' \
     --data-raw '{"input": {"input": "客户：xxxx 小光：xxxx 客户：xxx 小光：xxx", "id": id_input, "from": "customer"}}'
